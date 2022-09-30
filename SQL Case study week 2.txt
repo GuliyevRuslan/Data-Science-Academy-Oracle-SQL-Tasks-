@@ -16,27 +16,24 @@ salary is greater than 5000.*/
 select department_id  from hr.employees
 having max(salary)-min(salary) > 5000   group by department_id 
 
-/*4. Display salaries of employees who has not commission pact according to departments
-(without using where).*/
-
  
 
-/*5. How many people has job id with average salary between 3000 and 7000?*/
+/*4. How many people has job id with average salary between 3000 and 7000?*/
 
 select count(job_id) from hr.employees 
    having  avg(salary) between  3000 and 7000 group by  department_id 
    
-  /* 6. Find number of employees with same name.*/
+  /* 5. Find number of employees with same name.*/
   
   SELECT COUNT(employee_id) from hr.employees
   having count (first_name)>1  
   
- /* 7. How many people with the same phone code work in departments 50 and 90?*/
+ /* 6. How many people with the same phone code work in departments 50 and 90?*/
  
  select count(employee_id) from hr.employees 
   where department_id=50 or department_id=90 having count(phone_number)>1 
 
-/*9. How many employees work in departments which has maximum salary more than 5000?*/
+/*7. How many employees work in departments which has maximum salary more than 5000?*/
   
   select count(employee_id), department_id  from hr.employees 
   having max(salary)>5000 group by department_id 
