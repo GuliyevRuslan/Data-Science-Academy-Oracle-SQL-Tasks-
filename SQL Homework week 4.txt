@@ -1,0 +1,138 @@
+/*1. According to the given diagram create STUDENTS , ACTIVITIES and SCHEDULE tables. (PK – PRIMARY
+KEY,FK – FOREIGN KEY, * - NOT NULL )*/
+
+create table students(
+s_id
+constraint s_id_nn not null
+constraint s_id_pk primary key (s_id),
+first_name varchar2 (255),
+last_name varchar2 (255),
+phone_number varchar2 (255),
+email varchar2 (255),
+);
+
+create table activities(
+a_id number
+constraint a_id_nn not null,
+constraint a_id_pk primary key(a_id),
+cost number 
+a_name varchar2 (255),
+constraint a_name_nn not null,
+constraint cost_nn not null
+);
+
+create table schedule(
+s_id number,
+constraint s_id_fk foreign(s_id)
+reference students (s_id),
+a_id number
+Constraint a_id_fk FOREIGN KEY (a_id)
+REFERENCES activities (a_id),
+s_date date
+);
+
+--ara
+
+Create Table students(
+s_id number 
+Constraint s_id_nn not null,
+Constraint s_id_pk PRIMARY KEY (s_id),
+first_name varchar2(255),
+last_name varchar2(255),
+phone_number varchar2(255),
+email varchar2(255)
+);
+
+
+Create Table activities(
+a_id number 
+Constraint a_id_nn not null,
+Constraint a_id_pk PRIMARY KEY (a_id),
+a_name varchar2(255) 
+Constraint a_name_nn not null,
+cost number
+Constraint cost_nn not null
+);
+
+
+Create Table schedule(
+s_id number,
+Constraint s_id_fk FOREIGN KEY (s_id)
+REFERENCES students (s_id),
+a_id number,
+Constraint a_id_fk FOREIGN KEY (a_id)
+REFERENCES activities (a_id),
+s_date date
+);
+
+select * from students
+select  * from activities
+select * from schedule
+select * from hr.employees
+
+
+/*2. Insert data into students table from employees table.*/
+
+insert into students (s_id,first_name,last_name,phone_number,email)
+select employee_id, first_name,last_name,phone_number,email from hr.employees 
+
+/*3. Change phone number to ‘***’ for students with s_id > 200.*/
+
+update students set phone_number='***' where s_id>200
+
+/*4. Update first name and last names of students in Upper cases.*/
+
+update students set first_name=upper(first_name),last_name=upper(last_name)
+select * from students 
+
+/*5. Based on the students table populated with the following data, update the email to 'DSA' for all records
+whose s_id is greater than 150.*/
+
+update students set email='DSA' where s_id>150
+
+--6. Create PROGRAMMERS table using records from EMPLOYEES where job_id contains ‘PROG’ substring
+
+create table PROGRAMMERS AS 
+(select * from hr.employees where job_id='PROG')
+select * from programmers 
+
+--7. Delete records from students table where s_id is between 150 and 160.
+
+delete from students where s_id   between  150 and 160 
+select * from students 
+
+--8. a) Insert some date into SCHEDULE, then truncate and see results.
+
+insert into schedule (s_date)select hire_date from hr.employees;
+truncate table schedule
+
+--b) Drop schedule table
+Drop Table schedule ;
+
+--10. Create a table named “Participants” which consists of first_name, last_name and salary (have to more
+--than 10000).
+
+create table participants as  
+select first_name, last_name ,salary from hr.employees where salary > 10000\
+
+select * from participants ə
+
+/*9. For any date given, write a script to find:
+a) The first and the last days of the next year;*/
+
+Select add_months(trunc(to_date('24-MAR-22', 'DD-MM-YYYY'), 'YEAR'),12) 
+First_day_of_next_year,
+add_months(trunc(to_date('24-MAR-22', 'DD-MM-YYYY'), 'YEAR'),24)-1
+Last_day_of_next_year from dual 
+
+/*b) The first and the last days of the next month*/
+
+
+
+Select last_day(sysdate)+1 First_day_of_next_month,
+last_day(add_months(sysdate, 1)) Last_day_of_next_month from dual
+
+/*c) The first and the last days of the previous month.*/
+
+Select last_day(add_months(sysdate, -2))+1 First_day_of_previous_month,
+last_day(add_months(sysdate, -1)) Last_day_of_previous_month from dual

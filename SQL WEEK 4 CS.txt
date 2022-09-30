@@ -1,0 +1,66 @@
+select * from hr.departments;
+select * from hr.employees;
+
+
+--1. Return the name of the employee with the lowest salary in department 90.
+select * from(select first_name,
+row_number()
+over(partition by department_id order by salary desc)row_number
+ from hr.employees 
+ where department_id=90 )
+where row_number=1;
+
+
+--2. Select the department name, employee name, and salary of all employees who work in the
+--human resources or purchasing departments. Compute a rank for each unique salary in both
+--departments.
+
+select dep.department_name, emp.salary,
+dense_rank()
+over(partition by emp.department_id order by salary)D_s
+from hr.employees emp
+left join hr.departments dep on  emp.department_id=dep.department_id 
+where department_name in ('Purchasing','Human Resources');
+
+--3. Select the 3 employees with minimum salary for department id 50.
+
+SELECT *from(select first_name,salary,department_id,
+dense_rank()
+over(partition by department_id order by salary) D_s
+from hr.employees  where department_id=50) where D_s in (1,2);
+
+--4. Show first name, last name, salary and previously listed employee’s salary who works in
+--“IT_PROG” over hire date.
+
+select first_name ||' '|| last_name Full_name,salary, hire_date,
+dense_rank()
+over(partition by hire_date order by salary) D_s
+ from hr.employees where job_id='IT_PROG';
+ 
+ select first_name ||' '|| last_name Full_name, department_Id,hire_date, salary,
+lag (to_char(salary),1,'Yoxdur')
+over( partition by department_id order by hire_date) D_s
+ from hr.employees where job_id='IT_PROG';
+ 
+ --5. Display details of current job for employees who worked as IT Programmers in the past.
+ 
+ select * from hr.employees emp 
+ left join hr.jobs j on emp.job_id=j.job_id
+ WHERE EMPLOYEE_iD IN
+( select employee_id from hr.job_history where job_id='IT_PROG');
+
+--6. Make a copy of the employees table and update the salaries of the employees in the new table
+--with the maximum salary in their departments.
+
+create table copy_e as (select * from hr.employees);
+
+update copy_e c
+set salary = (select max(salary) from hr.employees e
+where c.department_id = e.department_id);
+
+
+--7. Make a copy of the employees table and update the salaries of the employees in the new table
+--with a 30 percent increase.
+Create Table copy2_emp as (Select * from hr.employees);
+
+update hr.copy2_emp set salary = salary + (0.3*salary);

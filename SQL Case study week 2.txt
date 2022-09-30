@@ -1,0 +1,59 @@
+
+/*1. Show minimum, average and maximum salary in last 15 years according to job id.*/
+
+select min(salary),avg(salary),max(salary) from hr.employees 
+where to_char (hire_date, 'yyyy')> 2006 group by job_id 
+
+/*2. How many employees hired after 2005 for each department?*/
+
+select min(salary),avg(salary),max(salary) from hr.employees 
+where extract (year from hire_date)>2005 group by job_id 
+ 
+
+/*3. Write a query to show departments in which the difference between maximum and minimum
+salary is greater than 5000.*/
+
+select department_id  from hr.employees
+having max(salary)-min(salary) > 5000   group by department_id 
+
+/*4. Display salaries of employees who has not commission pact according to departments
+(without using where).*/
+
+ 
+
+/*5. How many people has job id with average salary between 3000 and 7000?*/
+
+select count(job_id) from hr.employees 
+   having  avg(salary) between  3000 and 7000 group by  department_id 
+   
+  /* 6. Find number of employees with same name.*/
+  
+  SELECT COUNT(employee_id) from hr.employees
+  having count (first_name)>1  
+  
+ /* 7. How many people with the same phone code work in departments 50 and 90?*/
+ 
+ select count(employee_id) from hr.employees 
+  where department_id=50 or department_id=90 having count(phone_number)>1 
+
+/*9. How many employees work in departments which has maximum salary more than 5000?*/
+  
+  select count(employee_id), department_id  from hr.employees 
+  having max(salary)>5000 group by department_id 
+  
+
+ /*8. Display departments with average number of employees more than 5 in spring and autumn.*/
+  
+   select count(employee_id) as "SAY", department_id from hr.employees
+  where(case when to_char (hire_date,'MON') IN ('MAR','APR','MAY') THEN 'SPRING'
+  WHEN TO_CHAR (hire_date,'MON') IN ('JAN','FEB','DEC') THEN 'AUTUMN'
+  WHEN TO_CHAR(hire_date, 'MON') IN ('JUN', 'JUL', 'AUG') THEN 'SUMMER' 
+WHEN TO_CHAR(hire_date, 'MON') IN ('SEP', 'OCT', 'NOV') THEN 'FALL' 
+ELSE TO_CHAR(hire_date)
+END) in ('SPRING' , 'FALL')
+  having count(employee_id) >5 group by department_id 
+
+
+
+
+

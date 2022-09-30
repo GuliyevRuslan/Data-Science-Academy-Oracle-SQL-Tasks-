@@ -1,0 +1,85 @@
+/*1. Display the first promotion year for each employee.*/
+
+select employee_id,extract(year from min (end_date)) first_promotion_year  from hr.job_history 
+group by employee_id having count(*)>1 
+
+
+/*2. Display location, city and department name of employees who have been promoted more than
+once.*/
+
+
+select employee_id, department_name, city, loc.location_id from hr.job_history jh 
+left join hr.departments dep on  jh.department_id=dep.department_id 
+left join hr.locations loc on dep.location_id=loc.location_id 
+group by jh.employee_id, department_name, city, loc.location_id 
+having count(*)>1 
+
+/*3. Display minimum and maximum “hire_date” of employees work in IT and HR departments.*/
+
+select department_name, min(hire_date), max(hire_date) from hr.employees emp
+left join hr.departments dep on emp.department_id=dep.department_id
+where department_name in ('HR departments','IT ') group by department_name 
+
+/*4. Find difference between current date and hire dates of employees after sorting them by hire
+date, then show difference in days, months and years.*/
+
+SELECT first_name ||' '||last_name as full_name,
+sysdate,hire_date,round(sysdate-hire_date) Day_difference ,
+extract(year from sysdate)-extract(year from hire_date) Year_difference, 
+round(months_between(sysdate,hire_date)) Month_difference from hr.employees order by hire_date asc
+
+/*5. Find which departments used to hire earliest/latest.*/
+
+
+
+
+select department_name,hire_date from hr.employees emp
+left join hr.departments dep on emp.department_id=dep.department_id 
+where hire_date=(select min(hire_date) from hr.employees)
+union
+select department_name,hire_date from hr.employees emp
+left join hr.departments dep on emp.department_id=dep.department_id
+where hire_date=(select max(hire _date) from hr.employees)
+
+/*6. Find the number of departments with no employee for each city.*/
+
+
+select count(distinct dep.department_name ) number_of_departments from hr.departments dep
+left join hr.employees emp on dep.department_id=emp.department_id
+left join hr.locations loc on loc.location_id=dep.location_id
+where employee_id is not null 
+
+
+/*7. Create a category called “seasons” and find in which season most employees were hired.*/
+
+
+
+
+select * from ( select case 
+     when extract (month from hire_date) in (12,1,2) then 'Winter'
+     when extract (month from hire_date) in (3,4,5) then  'Spring'
+     When extract (month from hire_date) in (6,7,8) then 'Summer'
+else 'Autumn' 
+end as seasons, 
+count(employee_id) number_of_employees
+from hr.employees 
+group by case 
+
+
+      when extract (month from hire_date) in (12,1,2) then 'Winter'
+      when extract (month from hire_date) in (3,4,5) then  'Spring'
+      When extract (month from hire_date) in (6,7,8) then 'Summer'
+   else 'Autumn'
+   end) order by number_of_employees desc 
+ 
+
+ /*  8. Find the cities of employees with average salary more than 5000.*/
+
+
+
+
+select city,avg(salary) from hr.employees emp
+left join hr.departments dep on emp.department_id=dep.department_id
+left join hr.locations loc on dep.location_id=loc.location_id
+group by city having avg(salary )>5000
+

@@ -1,0 +1,88 @@
+/*1.2) EMP_DETAILS_VIEW istifadə etmədən SQL skript yazın. SQL-in
+nəticəsində aşağıdakı məlumatlar görünməlidir:
+ İşçinin ID-si
+ İşçinin adı və soyadı bir sütunda
+ İşçinin cari vəzifəsi (tam olaraq)
+ İşçinin maaşı
+ İşçinin işlədiyi cari departamentin adı*/
+
+Select   emp.employee_id İşçi_ID,
+        first_name||' '||last_name "İşçi Adı və Soyadı",
+        j.job_title"Carı Vəzifə",
+         emp.salary Maaş,
+        dep.department_name "Department Adı"
+from hr.employees emp
+left join hr.departments dep on emp.department_id=dep.department_id
+left join hr.jobs j on j.job_id=emp.job_id 
+order by employee_id;
+
+
+
+/*1.3) “1.2” saylı tapşırığın SQL koduna aşağıdakı punktlara cavab
+verəcək əlavələri edin:
+ İşçinin işlədiyi departamentdə minimum əmək haqqı
+ İşçinin işlədiyi departamentdə maksimum əmək haqqı
+ İşçiyə işlədiyi departamentin aylıq əmək haqqı büdcəsinin neçə faizi
+aylıq olaraq işçiyə verilir*/
+
+Select   emp.employee_id İşçi_ID,
+        first_name||' '||last_name "İşçi Adı və Soyadı",
+        j.job_title"Carı Vəzifə",
+         emp.salary Maaş,
+        dep.department_name "Department Adı",f.Max_salary,f.Min_salary,round((emp.salary/f.Sum_salary)*100,2) Faiz_Maaş
+from hr.employees emp
+left join hr.departments dep on emp.department_id=dep.department_id
+left join hr.jobs j on j.job_id=emp.job_id 
+
+left join(select department_name,max(salary)Max_salary,min(salary)Min_salary,sum(salary) Sum_salary from employees emp 
+left join departments dep on emp.department_id=dep.department_id group by department_name ) f
+on f.department_name=dep.department_name 
+
+
+
+order by employee_id;
+
+/*1.4) “1.2” saylı (“1.3” deyil, məhz “1.2” saylı) tapşırığın SQL koduna
+aşağıdakı punktlara cavab verəcək əlavələri edin:
+ Yalnız nə vaxtsa vəzifəsi dəyişmiş işçilərin siyahısı çıxsın
+ İşçinin ilk dəfə işə götürülmə tarixi
+ İşçinin ilk dəfə işə götürüldüyü vəzifə
+ İşçinin son dəfə vəzifəsinin dəyişilmə tarixi
+ İşçinin vəzifəsinin dəyişmə sayı*/
+
+Select   emp.employee_id "Işçi ID" ,
+        first_name||' '||last_name Full_name,
+        j.job_title"Carı Vəzifə",
+         emp.salary Maaş,
+        dep.department_name "Department Adı"
+        
+from hr.employees emp
+left join hr.departments dep on emp.department_id=dep.department_id
+left join hr.jobs j on j.job_id=emp.job_id 
+
+where employee_id in (select employee_id from job_history group by employee_id having count(employee_id)>1)
+
+ order by emp.employee_id;
+ 
+ 
+ Select   emp.employee_id İşçi_ID,
+        first_name||' '||last_name "İşçi Adı və Soyadı",
+        j.job_title"Carı Vəzifə",
+         emp.salary Maaş,
+        dep.department_name "Department Adı",emp.hire_date
+from hr.employees emp
+left join hr.departments dep on emp.department_id=dep.department_id
+left join hr.jobs j on j.job_id=emp.job_id 
+
+
+order by emp.employee_id;
+
+select department_name,city,first_name from employees emp
+left join departments dep on emp.department_id = dep.department_id
+left join locations loc on dep.location_id = loc.location_id;
+
+
+
+
+
+

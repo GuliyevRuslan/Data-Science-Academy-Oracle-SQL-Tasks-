@@ -1,0 +1,50 @@
+/*1. Display employees who joined in the month of May.*/
+
+select * from hr.employees 
+where to_char(hire_date, 'MON')= 'MAY'
+
+
+/*2. Display employees who joined in the current year.*/
+
+select * from hr.employees 
+where to_char(hire_date,'YYYY')='2022'
+
+/*3. Display the number of days between system date and 1st January 2011.*/
+
+select trunc( sysdate)- to_date ('01-01-2011','dd-mm-yyyy') from dual
+
+/*4. Display maximum salary of employees.*/
+
+select   MAX (salary) from hr.employees
+
+
+/*5. Display number of employees in each department.*/
+
+SELECT COUNT(*), DEPARTMENT_ID FROM hr.employees
+group by DEPARTMENT_ID
+
+
+/*6. Display number of employees who joined after 15th of month.*/
+
+select count (*)  employee_id from hr.employees where to_char (hire_date,'dd') >15 
+
+/*7. Display average salary of employees in each department who have commission percentage.*/
+
+select avg(salary),  department_id from hr.employees
+ where  COMMISSION_PCT  is not null group by department_id
+
+/*8. Display job ID for jobs with average salary more than 10000.*/
+ 
+ select job_id,avg(salary) from hr.employees group by job_id
+ having  avg(salary) > 10000
+
+/*9. Display job ID, number of employees, sum of salary, and difference between the highest
+salary and the lowest salary of the employees for all jobs.*/
+
+select job_id, count(*) employee_id, sum(salary), max(salary)-min(salary) from hr.employees group by job_id
+
+/*10.Display manager ID and number of employees managed by the manager.*/
+
+select manager_id, count(*) employee_id from hr.employees group by manager_id
+
+
